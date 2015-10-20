@@ -1,0 +1,125 @@
+int pwm_a = 3;   //PWM control for motor outputs 1 and 2 is on digital pin 3
+int pwm_b = 11;  //PWM control for motor outputs 3 and 4 is on digital pin 11
+int dir_a = 12;  //direction control for motor outputs 1 and 2 is on digital pin 12
+int dir_b = 13;  //direction control for motor outputs 3 and 4 is on digital pin 13
+int val = 0;     //value for fade
+int midButton = 7;
+
+void setup()
+{
+  pinMode(pwm_a, OUTPUT);  //Set control pins to be outputs
+  pinMode(pwm_b, OUTPUT);
+  pinMode(dir_a, OUTPUT);
+  pinMode(dir_b, OUTPUT);
+  pinMode(midButton, INPUT); 
+  
+  analogWrite(pwm_a, 100);  //set both motors to run at (100/255 = 39)% duty cycle (slow)
+  analogWrite(pwm_b, 100);
+  
+}
+
+void loop()
+{ 
+  while(1==1) //essential for if loops to run
+  {
+    forward(); //just keeps moving forward (delays no needed; no stalls)
+    if(digitalRead(midButton)==HIGH)
+    {
+      stopped(); //stops are placed so that no interia is caried over
+      delay(250);
+      backward();
+      delay(800);
+      stopped();
+      delay(250);
+      rightSwing(); 
+      delay(400); //on floor 90 degrees (not same for all robots)
+      
+    }
+  }
+}
+
+//given functions below
+
+void backward() //full speed backward
+{
+  digitalWrite(dir_a, LOW); 
+  digitalWrite(dir_b, LOW);  
+  analogWrite(pwm_a, 250);   
+  analogWrite(pwm_b, 255);
+}
+
+void stopped() //stop
+{ 
+  digitalWrite(dir_a, LOW); //Set motor direction, 1 low, 2 high
+  digitalWrite(dir_b, LOW); //Set motor direction, 3 high, 4 low
+  analogWrite(pwm_a, 0);    //set both motors to run at 100% duty cycle (fast)
+  analogWrite(pwm_b, 0); 
+}
+
+void forward() //full speed forward
+{ 
+  digitalWrite(dir_a, HIGH); 
+  digitalWrite(dir_b, HIGH);  
+  analogWrite(pwm_a, 255); //speeds are adjusted in accordance to my robot's motors
+  analogWrite(pwm_b, 250);
+}
+
+void right() //turns about a point
+{
+  digitalWrite(dir_a, HIGH);  
+  digitalWrite(dir_b, HIGH);   
+  analogWrite(pwm_a, 0);    
+  analogWrite(pwm_b, 250);
+}
+void rightSwing() //swings make robot turn in a full circle
+{
+  digitalWrite(dir_a, HIGH);  
+  digitalWrite(dir_b, HIGH);  
+  analogWrite(pwm_a, 250);   
+  analogWrite(pwm_b, 50);
+}
+
+void left()
+{
+  digitalWrite(dir_a, HIGH);  
+  digitalWrite(dir_b, HIGH);  
+  analogWrite(pwm_a, 250);  
+  analogWrite(pwm_b, 0);
+}
+
+void leftSwing()
+{
+  digitalWrite(dir_a, HIGH);  
+  digitalWrite(dir_b, HIGH);  
+  analogWrite(pwm_a, 50);    
+  analogWrite(pwm_b, 250);
+}
+
+void forwardSlow() //slower speed forward
+{ 
+  digitalWrite(dir_a, HIGH); 
+  digitalWrite(dir_b, HIGH);   
+  analogWrite(pwm_a, 120);    
+  analogWrite(pwm_b, 128);
+}
+
+void backwardSlow() //slower speed backward
+{ 
+  digitalWrite(dir_a, LOW);  
+  digitalWrite(dir_b, LOW);  
+  analogWrite(pwm_a, 120);   
+  analogWrite(pwm_b, 128);
+}
+
+void forw() // no pwm defined
+{ 
+  digitalWrite(dir_a, HIGH);  //Reverse motor direction, 1 high, 2 low
+  digitalWrite(dir_b, HIGH);  //Reverse motor direction, 3 low, 4 high  
+}
+
+void back() // no pwm defined
+{
+  digitalWrite(dir_a, LOW);  //Set motor direction, 1 low, 2 high
+  digitalWrite(dir_b, LOW);  //Set motor direction, 3 high, 4 low
+}
+
